@@ -6,4 +6,16 @@ echo "Welcome Gambling Simulation"
 STAKE=100
 BET=1
 
-#VARIABLE
+function bet()
+{
+	result=$((RANDOM%2))
+	if [[ result -eq 1 ]]
+	then
+		echo "Win"
+	else
+		echo "Loose"
+	fi
+}
+
+#calling bet function here
+bet
