@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash  
 #welcome text of gambler
 echo "Welcome Gambling Simulation"
 
@@ -6,38 +6,40 @@ echo "Welcome Gambling Simulation"
 STAKE=100
 BET=1
 
-
 #calculate percentage
 Percentage=$(( STAKE * 50 / 100 ))
 
-uppercash=$(( STAKE + Percentage ))
-lowercash=$(( STAKE - Percentage ))
+#VARIABLE
+UpperCash=$(( STAKE + Percentage ))
+LowerCash=$(( STAKE - Percentage ))
 cash=$STAKE
 
-#declare -A	DictWinLoose
+declare -A	winlooseDict
 #function to check win or loose gambler
-function bet()
+function GamblerBet()
 {
-	while [[ $cash -lt uppercash && $cash -gt lowercash ]]
+	while [[ $cash -lt $UpperCash && $cash -gt $LowerCash ]]
 	do
-		result=$((RANDOM%2))
-		if [[ result -eq 1 ]]
+		if [[ $((RANDOM%2)) -eq 1 ]]
 		then
 			((cash++))
 		else
 			((cash--))
 		fi
 	done
-	PullAmount=$((cash - STAKE))
-	echo $PullAmount
+	CurrentAmount=$((cash - STAKE))
+	echo $CurrentAmount
 }
 
+echo "Pull Amount:$PullAmount"
 #total amount  of win and loose
-function total_amount()
+function total_Monthly_amount()
 {
-	for ((i=1; i<=20; i++))
+	for ((day=1; day<=20; day++))
 	do 
-			totalAmount=$((totalAmount + $(bet)))
+			winlooseDict[Day$day]=$(GamblerBet)
+			totalAmount=$(($totalAmount + ${winlooseDict[Day$day]}))
+			echo  "Day :$day" ${winlooseDict[Day$day]}
 	done
 	if [[ $totalAmount -gt 0 ]]
 	then
@@ -45,7 +47,11 @@ function total_amount()
 	else
 		echo "Looser Count is : $totalAmount"
 	fi
+
 }
 
-#calling to function
-total_amount
+#calling function 
+total_Monthly_amount
+
+
+
