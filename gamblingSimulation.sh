@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x
 #welcome text of gambler
 echo "Welcome Gambling Simulation"
 
@@ -6,32 +6,46 @@ echo "Welcome Gambling Simulation"
 STAKE=100
 BET=1
 
+
 #calculate percentage
-PERCENTAGE=$(( STAKE * 50 / 100 ))
+Percentage=$(( STAKE * 50 / 100 ))
 
-UpperCash=$(( STAKE +  PERCENTAGE ))
-LowerCash=$(( STAKE - PERCENTAGE ))
-CASH=$STAKE
+uppercash=$(( STAKE + Percentage ))
+lowercash=$(( STAKE - Percentage ))
+cash=$STAKE
 
+#declare -A	DictWinLoose
 #function to check win or loose gambler
 function bet()
 {
-	while [[ $CASH -lt UpperCash && $CASH -gt LowerCash ]]
+	while [[ $cash -lt uppercash && $cash -gt lowercash ]]
 	do
 		result=$((RANDOM%2))
 		if [[ result -eq 1 ]]
 		then
-			((CASH++))
-			echo "Win : $CASH"
+			((cash++))
 		else
-			((CASH--))
-			echo "Loose : $CASH"
+			((cash--))
 		fi
 	done
+	PullAmount=$((cash - STAKE))
+	echo $PullAmount
 }
 
-#calling bet function here
-bet
-echo "Total Days = $CASH"
+#total amount  of win and loose
+function total_amount()
+{
+	for ((i=1; i<=20; i++))
+	do 
+			totalAmount=$((totalAmount + $(bet)))
+	done
+	if [[ $totalAmount -gt 0 ]]
+	then
+		echo "Winner Count is : $totalAmount"
+	else
+		echo "Looser Count is : $totalAmount"
+	fi
+}
 
-
+#calling to function
+total_amount
