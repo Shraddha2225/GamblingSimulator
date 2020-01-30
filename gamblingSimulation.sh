@@ -1,20 +1,23 @@
-#!/bin/bash  
+#!/bin/bash -x
 #welcome text of gambler
 echo "Welcome Gambling Simulation"
 
 #CONSTANTS
 STAKE=100
 BET=1
+DAY=20
 
 #calculate percentage
-Percentage=$(( STAKE * 50 / 100 ))
+PERCENTAGE_OF_STAKE=$(( STAKE * 50 / 100 ))
 
 #VARIABLE
-UpperCash=$(( STAKE + Percentage ))
-LowerCash=$(( STAKE - Percentage ))
+UpperCash=$(( STAKE + PERCENTAGE_OF_STAKE ))
+LowerCash=$(( STAKE - PERCENTAGE_OF_STAKE ))
 cash=$STAKE
 
+#declare dictionary
 declare -A	winlooseDict
+
 #function to check win or loose gambler
 function GamblerBet()
 {
@@ -27,31 +30,49 @@ function GamblerBet()
 			((cash--))
 		fi
 	done
+	#calculate gainamount
 	CurrentAmount=$((cash - STAKE))
 	echo $CurrentAmount
 }
 
-echo "Pull Amount:$PullAmount"
 #total amount  of win and loose
 function total_Monthly_amount()
 {
-	for ((day=1; day<=20; day++))
-	do 
-			winlooseDict[Day$day]=$(GamblerBet)
-			totalAmount=$(($totalAmount + ${winlooseDict[Day$day]}))
-			echo  "Day :$day" ${winlooseDict[Day$day]}
+	for ((day=1; day<=$DAY; day++))
+	do
+		#winlooseDict[Day$day]=$(GamblerBet)
+		winlooseDict[Day$day]=$((${winlooseDict[Day$((day-1))]} + $(GamblerBet)))
 	done
-	if [[ $totalAmount -gt 0 ]]
-	then
-		echo "Winner Count is : $totalAmount"
-	else
-		echo "Looser Count is : $totalAmount"
-	fi
-
+	echo "Key= ${!winlooseDict[@]}"
+	echo "Value= ${winlooseDict[@]}"
 }
 
-#calling function 
-total_Monthly_amount
+#function to  calculate luckiest days
+function LuckiestDay()
+{
+	echo "Luckiest day in month..."
+   for((day=1; day<=$DAY; day++))
+   do
+      echo "Day$day" ${winlooseDict[Day$day]}
+   done | sort -k2 -rn | head -n1
+}
+#
+#
+##function to calculate unluckiest days
+function UnluckiestDay()
+{
+	echo "Unluckiest day in month.."
+   for((day=1; day<=$DAY; day++))
+   do
+      echo "Day$day" ${winlooseDict[Day$day]}
+   done | sort -k2 -n | head -n1
+}
 
-
-
+#main fuction calling 
+function main()
+{
+	total_Monthly_amount
+	LuckiestDay
+	UnluckiestDay
+}
+main
