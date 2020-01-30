@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 #welcome text of gambler
 echo "Welcome Gambling Simulation"
 
@@ -16,7 +16,7 @@ LowerCash=$(( STAKE - PERCENTAGE_OF_STAKE ))
 cash=$STAKE
 
 #declare dictionary
-declare -A	winlooseDict
+declare -A winlooseDict
 
 #function to check win or loose gambler
 function GamblerBet()
@@ -56,9 +56,8 @@ function LuckiestDay()
       echo "Day$day" ${winlooseDict[Day$day]}
    done | sort -k2 -rn | head -n1
 }
-#
-#
-##function to calculate unluckiest days
+
+#function to calculate unluckiest days
 function UnluckiestDay()
 {
 	echo "Unluckiest day in month.."
@@ -68,11 +67,25 @@ function UnluckiestDay()
    done | sort -k2 -n | head -n1
 }
 
+#function to check next month for gambler
+function checkNextMonthForGambling()
+{
+	if [[ ${winlooseDict[Day20]} -gt 0 ]]
+	then
+		echo "******You Are In Next Month For Gambling*****"
+		main
+	else
+		echo "Sorry You Loose Your Cash Better Luck Next Time......."
+	fi
+}
+
+
 #main fuction calling 
 function main()
 {
 	total_Monthly_amount
 	LuckiestDay
 	UnluckiestDay
+	checkNextMonthForGambling
 }
 main
